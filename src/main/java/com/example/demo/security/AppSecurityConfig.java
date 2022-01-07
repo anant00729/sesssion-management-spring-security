@@ -22,14 +22,24 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                        .anyRequest().authenticated()
-                        .and()
-                                .formLogin()
-                .defaultSuccessUrl("/")
-                .and()
+        http
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/addUser")
+                .permitAll()
+                .anyRequest()
+                .authenticated().and()
+                .formLogin().and()
                 .logout()
                 .logoutSuccessUrl("/login");
+//        http.authorizeRequests()
+//                        .anyRequest().authenticated()
+//                        .and()
+//                                .formLogin()
+//                .defaultSuccessUrl("/")
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/login");
     }
 
     @SuppressWarnings("deprecation")
@@ -37,8 +47,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(service);
-//		provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-        provider.setPasswordEncoder(new BCryptPasswordEncoder());
+		provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+//        provider.setPasswordEncoder(new BCryptPasswordEncoder());
         return provider;
     }
 
